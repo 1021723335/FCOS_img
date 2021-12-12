@@ -1,4 +1,5 @@
-RUN docker pull nvidia/cuda:10.2-cudnn7-denvel-ubuntu18.04
+
+RUN pytorch/pytorch:1.7.1-cuda10.2-cudnn7-runtime
 RUN apt-get update 
 RUN apt-get upgrade 
 RUN apt-get install vim
