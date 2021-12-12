@@ -1,56 +1,42 @@
-ARG CUDA="9.0"
-ARG CUDNN="7"
+FROM gpuci/miniconda-cuda:11.5-devel-ubuntu20.04
+# first, make sure that your conda is setup properly with the right environment
+# for that, check that `which conda`, `which pip` and `which python` points to the
+# right path. From a clean conda env, this is what you need to do
 
-FROM nvidia/cuda:${CUDA}-cudnn${CUDNN}-devel-ubuntu16.04
+RUN conda create --name FCOS
+RUN conda activate FCOS
 
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+# this installs the right pip and dependencies for the fresh python
+RUN conda install ipython
 
-# install basics
-RUN apt-get update -y \
- && apt-get install -y apt-utils git curl ca-certificates bzip2 cmake tree htop bmon iotop g++ \
- && apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
+# FCOS and coco api dependencies
+RUN pip install ninja yacs cython matplotlib tqdm
 
-# Install Miniconda
-RUN curl -so /miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && chmod +x /miniconda.sh \
- && /miniconda.sh -b -p /miniconda \
- && rm /miniconda.sh
+# follow PyTorch installation in https://pytorch.org/get-started/locally/
+# we give the instructions for CUDA 10.2
+RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
-ENV PATH=/miniconda/bin:$PATH
+RUN export INSTALL_DIR=$PWD
 
-# Create a Python 3.6 environment
-RUN /miniconda/bin/conda install -y conda-build \
- && /miniconda/bin/conda create -y --name py36 python=3.6.7 \
- && /miniconda/bin/conda clean -ya
-
-ENV CONDA_DEFAULT_ENV=py36
-ENV CONDA_PREFIX=/miniconda/envs/$CONDA_DEFAULT_ENV
-ENV PATH=$CONDA_PREFIX/bin:$PATH
-ENV CONDA_AUTO_UPDATE_CONDA=false
-
-RUN conda install -y ipython
-RUN pip install ninja yacs cython matplotlib opencv-python tqdm
-
-# Install PyTorch 1.0 Nightly
-ARG CUDA
-RUN conda install pytorch-nightly cudatoolkit=${CUDA} -c pytorch \
- && conda clean -ya
-
-# Install TorchVision master
-RUN git clone https://github.com/pytorch/vision.git \
- && cd vision \
- && python setup.py install
-
-# install pycocotools
-RUN git clone https://github.com/cocodataset/cocoapi.git \
- && cd cocoapi/PythonAPI \
- && python setup.py build_ext install
+# install pycocotools. Please make sure you have installed cython.
+RUN cd $INSTALL_DIR
+RUN git clone https://github.com/cocodataset/cocoapi.git
+RUN cd cocoapi/PythonAPI
+RUN python setup.py build_ext install
 
 # install PyTorch Detection
-ARG FORCE_CUDA="1"
-ENV FORCE_CUDA=${FORCE_CUDA}
-RUN git clone https://github.com/facebookresearch/maskrcnn-benchmark.git \
- && cd maskrcnn-benchmark \
- && python setup.py build develop
+RUN cd $INSTALL_DIR
+RUN git clone https://github.com/tianzhi0549/FCOS.git
+RUN cd FCOS
 
-WORKDIR /maskrcnn-benchmark
+# the following will install the lib with
+# symbolic links, so that you can modify
+# the files if you want and won't need to
+# re-build it
+RUN python setup.py build develop --no-deps
+
+
+RUN unset INSTALL_DIR
+
+# or if you are on macOS
+# MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop
