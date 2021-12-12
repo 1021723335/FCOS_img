@@ -1,4 +1,4 @@
-RUN docker run -it --gpus all --name g_fcos --volumes-from dataVol nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04 /bin/bash
+RUN docker pull nvidia/cuda:10.2-cudnn7-denvel-ubuntu18.04
 RUN apt-get update 
 RUN apt-get upgrade 
 RUN apt-get install vim
