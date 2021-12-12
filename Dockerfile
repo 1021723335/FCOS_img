@@ -7,7 +7,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # install basics
 RUN apt-get update -y \
- && apt-get install -y apt-utils git curl ca-certificates bzip2 cmake tree htop bmon iotop g++
+ && apt-get install -y apt-utils git curl ca-certificates bzip2 cmake tree htop bmon iotop g++ \
+ && apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 # Install Miniconda
 RUN curl -so /miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
@@ -28,20 +29,12 @@ ENV PATH=$CONDA_PREFIX/bin:$PATH
 ENV CONDA_AUTO_UPDATE_CONDA=false
 
 RUN conda install -y ipython
-RUN pip install ninja yacs cython matplotlib jupyter
+RUN pip install ninja yacs cython matplotlib opencv-python tqdm
 
-# Install PyTorch 1.0 Nightly and OpenCV
-RUN conda install -y pytorch-nightly -c pytorch \
- && conda install -y opencv -c menpo \
+# Install PyTorch 1.0 Nightly
+ARG CUDA
+RUN conda install pytorch-nightly cudatoolkit=${CUDA} -c pytorch \
  && conda clean -ya
-
-WORKDIR /root
-
-USER root
-
-RUN mkdir /notebooks
-
-WORKDIR /notebooks
 
 # Install TorchVision master
 RUN git clone https://github.com/pytorch/vision.git \
@@ -54,14 +47,10 @@ RUN git clone https://github.com/cocodataset/cocoapi.git \
  && python setup.py build_ext install
 
 # install PyTorch Detection
+ARG FORCE_CUDA="1"
+ENV FORCE_CUDA=${FORCE_CUDA}
 RUN git clone https://github.com/facebookresearch/maskrcnn-benchmark.git \
  && cd maskrcnn-benchmark \
  && python setup.py build develop
 
-RUN jupyter notebook --generate-config
-
-ENV CONFIG_PATH="/root/.jupyter/jupyter_notebook_config.py"
-
-COPY "jupyter_notebook_config.py" ${CONFIG_PATH}
-
-ENTRYPOINT ["sh", "-c", "jupyter notebook --allow-root -y --no-browser --ip=0.0.0.0 --config=${CONFIG_PATH}"]
+WORKDIR /maskrcnn-benchmark
