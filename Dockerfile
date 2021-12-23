@@ -1,1 +1,1 @@
-FROM docker pull ylashin/detectron2:latest
+FROM ylashin/detectron2:latest
