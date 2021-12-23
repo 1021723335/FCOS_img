@@ -1,1 +1,1 @@
-FROM ylashin/detectron2:latest
+FROM khammami/detectron2:latest
