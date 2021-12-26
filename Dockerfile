@@ -9,6 +9,4 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && git clone https://github.com/KaiyangZhou/Dassl.pytorch.git \
     && cd Dassl.pytorch \
     && pip install -r requirements.txt \
-    && python setup.py develop \
-    && cd .. \
-    && rm -rf Dassl.pytorch
+    && python setup.py develop 
