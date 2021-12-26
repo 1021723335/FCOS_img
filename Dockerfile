@@ -11,4 +11,4 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install -r requirements.txt \
     && python setup.py develop \
     && cd .. \
-    && del Dassl.pytorch
+    && rm -rf Dassl.pytorch
