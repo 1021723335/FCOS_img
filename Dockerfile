@@ -9,7 +9,7 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install mock \
     && pip install opencv-python \
     && pip install tqdm pandas matplotlib seaborn scikit-learn scipy simplejson termcolor \
-    && pip install -c iopath iopath \
+#     && pip install -c iopath iopath \
     && pip install timm==0.4.12 \
     && pip install ml-collections \
     && pip install submitit -U \
