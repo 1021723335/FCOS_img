@@ -11,16 +11,4 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && rm -rf detectron2.zip \
 #     && cd detectron2 \
 #     && pip install -r requirements.txt \
-    && python -m pip install -e detectron2 \
-    && pip install -q tensorflow \
-    && pip install tfds-nightly==4.4.0.dev202201080107 \
-    && pip install opencv-python \
-    && pip install tensorflow-addons \
-    && pip install mock \
-    && pip install opencv-python \
-    && pip install tqdm pandas matplotlib seaborn scikit-learn scipy simplejson termcolor \
-    && pip install -c iopath iopath \
-    && pip install timm==0.4.12 \
-    && pip install ml-collections \
-    && pip install submitit -U \
-    && pip install slurm_gpustat
+    && python -m pip install -e detectron2 
