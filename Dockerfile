@@ -2,8 +2,6 @@ FROM zqing10/docker:v1.3.4
 RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install pycocotools \
     && pip install lxml \
-    && pip install pycocotools \
-    && pip install lxml \
     && pip install -q tensorflow \
     && pip install tfds-nightly==4.4.0.dev202201080107 \
     && pip install opencv-python \
@@ -14,8 +12,13 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install timm==0.4.12 \
     && pip install ml-collections \
     && pip install submitit -U \
-    && pip install slurm_gpustat \
+    && pip install slurm_gpustat 
+    
+RUN apt-get update \
     && apt --fix-broken install -y \
+    && apt-get install -y build-essentia \
+    && apt-get install -y libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/* \
     && apt install sudo \
     && apt install wget \
     && apt install unzip -y 
