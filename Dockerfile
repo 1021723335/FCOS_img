@@ -16,9 +16,6 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     
 RUN apt-get update \
     && apt --fix-broken install -y \
-    && apt-get install -y build-essentia \
-    && apt-get install -y libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/* \
     && apt install sudo \
     && apt install wget \
     && apt install unzip -y 
