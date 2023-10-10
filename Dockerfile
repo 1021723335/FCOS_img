@@ -16,9 +16,11 @@ RUN /opt/conda/bin/python -m pip install --upgrade pip \
     
 RUN apt-get update \
     && apt --fix-broken install -y \
+    && apt-get install -y git \
     && apt install sudo \
     && apt install wget \
-    && apt install unzip -y 
+    && apt install unzip -y \
+    && rm -rf /var/lib/apt/lists/* 
 
 RUN git clone https://github.com/facebookresearch/detectron2.git
 
