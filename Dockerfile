@@ -2,6 +2,19 @@ FROM zqing10/docker:v1.3.4
 RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install pycocotools \
     && pip install lxml \
+    && pip install pycocotools \
+    && pip install lxml \
+    && pip install -q tensorflow \
+    && pip install tfds-nightly==4.4.0.dev202201080107 \
+    && pip install opencv-python \
+    && pip install tensorflow-addons \
+    && pip install mock \
+    && pip install opencv-python \
+    && pip install tqdm pandas matplotlib seaborn scikit-learn scipy simplejson termcolor \
+    && pip install timm==0.4.12 \
+    && pip install ml-collections \
+    && pip install submitit -U \
+    && pip install slurm_gpustat \
     && apt --fix-broken install -y \
     && apt install sudo \
     && apt install wget \
