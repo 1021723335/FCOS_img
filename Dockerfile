@@ -1,4 +1,7 @@
 FROM zqing10/docker:v1.3.4
+
+RUN conda update -n base -c defaults conda
+RUN conda install -n base python=3.8
 RUN /opt/conda/bin/python -m pip install --upgrade pip \
     && pip install pycocotools \
     && pip install lxml \
